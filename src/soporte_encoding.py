@@ -89,10 +89,12 @@ class Analisis_Visual_Encoding:
                           ax=axes[indice], 
                           errorbar= 'ci')
             
-            if axes[indice].get_legend() is not None:
-                axes[indice].get_legend().remove()
+            if axes[indice]:
                 axes[indice].tick_params(rotation=90)
-            
+                legend = axes[indice].get_legend()
+                if legend:  # Check if the legend exists
+                    legend.remove()  # Remove the legend if it exists
+
         fig.tight_layout()
 
 
@@ -102,6 +104,7 @@ class Asunciones:
         self.dataframe = dataframe
         self.columna_numerica = columna_numerica
         
+    
 
     def identificar_normalidad(self, metodo='shapiro', alpha=0.05, verbose=True):
         """
@@ -463,7 +466,7 @@ class Encoding:
             target_encoder = TargetEncoder(smooth="auto")
 
             # transformamos los datos de las columnas almacenadas en la variable col_code y añadimos la variable respuesta para que calcule la media ponderada para cada categória de las variables
-            target_encoder_trans = target_encoder.fit_transform(self.dataframe[self.variable_respuesta], self.dataframe[[col_encode]])
+            target_encoder_trans = target_encoder.fit_transform(self.dataframe[self.variable_respuesta].to_frame(), self.dataframe[col_encode])
             
             # creamos un DataFrame con los resultados de la transformación
             target_encoder_df = pd.DataFrame(target_encoder_trans, columns=target_encoder.get_feature_names_out())
